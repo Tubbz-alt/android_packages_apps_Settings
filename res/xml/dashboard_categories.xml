@@ -271,6 +271,14 @@
                 android:icon="@drawable/ic_settings_location"
                 />
 
+        <!-- Aopp Services Settings -->
+        <dashboard-tile
+                android:id="@+id/service_settings"
+                android:title="@string/service_settings_title"
+                android:fragment="com.android.settings.services.ServiceSettings"
+                android:icon="@drawable/ic_settings_services"
+                />
+
     </dashboard-category>
 
     <!-- SYSTEM -->
