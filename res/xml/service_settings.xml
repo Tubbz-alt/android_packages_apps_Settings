@@ -12,8 +12,9 @@
      limitations under the License.
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-
+                  xmlns:settings="http://schemas.android.com/apk/res/com.android.settings"
         android:key="service"
         android:title="@string/service_settings_title"
         settings:keywords="@string/keywords_services">
+
 </PreferenceScreen>
