@@ -288,7 +288,7 @@
     <string name="no_filters_title">No filters set</string>
 
     <!-- CM Updater -->
-    <string name="cmupdate_settings_title">CyanogenMod updates</string>
+    <string name="cmupdate_settings_title">System updates</string>
 
     <!-- Settings switch for updating Cyanogen recovery -->
     <string name="update_recovery_title">Update Cyanogen recovery</string>
@@ -297,7 +297,7 @@
     <string name="update_recovery_off_warning">WARNING: When this feature is disabled, your installed recovery will not be updated with OS upgrades.\n\nFuture OS updates may not install with outdated or custom recovery versions.\n\nDo you really want to disable this feature?</string>
 
     <!-- About phone screen, CyanogenMod version -->
-    <string name="mod_version">CyanogenMod version</string>
+    <string name="mod_version">Aopp version</string>
     <string name="mod_version_default">Unknown</string>
 
     <!-- About phone screen, Device model -->
