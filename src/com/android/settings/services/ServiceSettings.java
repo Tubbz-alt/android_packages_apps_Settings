@@ -81,16 +81,16 @@ public class ServiceSettings extends SettingsPreferenceFragment implements OnPre
         final Context context = getActivity();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-    	builder.setTitle("Add a service");
+        builder.setTitle("Add a service");
         
         ListView listView = new ListView(context);
         List<Map<String, String>> services = new ArrayList<Map<String, String>>();
-	Map<String, String> data = new HashMap<String, String>(2);
-	data.put("title", "Google Play Services");
-	data.put("summary", "Google apps and services");
+        Map<String, String> data = new HashMap<String, String>(2);
+        data.put("title", "Google Play Services");
+        data.put("summary", "Google apps and services");
         services.add(data);
 
-	SimpleAdapter listAdapter = new SimpleAdapter(context, services, R.layout.services_list_item,
+        SimpleAdapter listAdapter = new SimpleAdapter(context, services, R.layout.services_list_item,
 							new String[] {"title", "summary"},
 							new int[] {R.id.title, R.id.summary});
 	
@@ -98,11 +98,11 @@ public class ServiceSettings extends SettingsPreferenceFragment implements OnPre
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
-	    public void onItemClick(AdapterView<?> l, View v, int position, long id) {
+            public void onItemClick(AdapterView<?> l, View v, int position, long id) {
                 showAddDialog(context);
                 listDialog.dismiss();
             }
-	});
+        });
 
         builder.setView(listView);
 
@@ -115,14 +115,14 @@ public class ServiceSettings extends SettingsPreferenceFragment implements OnPre
     void showAddDialog(final Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Add Google Play Services?");
-	builder.setMessage("Google Play Services includes core Google apps and services, such as Google Play Store, Calendar, Gmail and Search.\n\nYou can also add other apps and services by adding Google Play  Services. Each user has access to the app store, which they can use to add their own apps, wallpapers and so on. Users can also manage their Google account and device settings.\n\nAny user can add and update apps for all other users.");
-	builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+        builder.setMessage("Google Play Services includes core Google apps and services, such as Google Play Store, Calendar, Gmail and Search.\n\nYou can also add other apps and services by adding Google Play  Services. Each user has access to the app store, which they can use to add their own apps, wallpapers and so on. Users can also manage their Google account and device settings.\n\nAny user can add and update apps for all other users.");
+        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-	        context.sendBroadcast(new Intent("com.pwnieexpress.android.pxinstaller.action.SERVICE"));
+                context.sendBroadcast(new Intent("com.pwnieexpress.android.pxinstaller.action.SERVICE"));
                 addDialog.dismiss();
             }
         });
-	builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 addDialog.dismiss();
             }
@@ -132,10 +132,10 @@ public class ServiceSettings extends SettingsPreferenceFragment implements OnPre
     }
 
     void updatePreferences() {
-	final Context context = getActivity();
-	addPreferencesFromResource(R.xml.service_settings);
+        final Context context = getActivity();
+        addPreferencesFromResource(R.xml.service_settings);
 
-	final PreferenceScreen preferenceScreen = (PreferenceScreen) findPreference(KEY_SERVICE);
+        final PreferenceScreen preferenceScreen = (PreferenceScreen) findPreference(KEY_SERVICE);
         final Preference addPreference = new Preference(context);
         addPreference.setTitle(R.string.print_menu_item_add_service);
         addPreference.setIcon(R.drawable.ic_menu_add_dark);
@@ -143,25 +143,25 @@ public class ServiceSettings extends SettingsPreferenceFragment implements OnPre
         addPreference.setOrder(ORDER_LAST);
         preferenceScreen.addPreference(addPreference);
 
-	Process process = null;
-	StringBuilder builder = new StringBuilder();
+        Process process = null;
+        StringBuilder builder = new StringBuilder();
         try {
             process = Runtime.getRuntime().exec("cat /data/system/packages.list");
-	    BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
-	    String line = null;
-	    while ((line = input.readLine()) != null) {
+            BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line = null;
+            while ((line = input.readLine()) != null) {
                 builder.append(line);
                 builder.append('\n');
             }
-	    String output = builder.toString();
-	    if (output.contains("gsf") || output.contains("gms")) {
-	        Log.d(TAG, "Google Services Framework detected");
-		Preference servicePreference = new Preference(context);
+            String output = builder.toString();
+            if (output.contains("gsf") || output.contains("gms")) {
+                Log.d(TAG, "Google Services Framework detected");
+                Preference servicePreference = new Preference(context);
                 servicePreference.setTitle("Google Play Services");
                 servicePreference.setIcon(R.drawable.common_ic_googleplayservices);
                 servicePreference.setOrder(ORDER_NEXT_TO_LAST);
                 preferenceScreen.addPreference(servicePreference);
-	    }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
