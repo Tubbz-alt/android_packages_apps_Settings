@@ -288,7 +288,7 @@
     <string name="no_filters_title">No filters set</string>
 
     <!-- CM Updater -->
-    <string name="cmupdate_settings_title">System updates</string>
+    <string name="cmupdate_settings_title">Aopp updates</string>
 
     <!-- Settings switch for updating Cyanogen recovery -->
     <string name="update_recovery_title">Update Cyanogen recovery</string>
