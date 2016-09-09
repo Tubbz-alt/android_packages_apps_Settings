@@ -63,6 +63,13 @@
             settings:keywords="@string/keywords_factory_data_reset"
             android:fragment="com.android.settings.MasterClear" />
 
+        <!-- Chroot Clear -->
+        <PreferenceScreen
+            android:title="@string/chroot_clear_title"
+            android:summary="@string/chroot_clear_summary"
+            settings:keywords="@string/keywords_chroot_factory_reset"
+            android:fragment="com.android.settings.ChrootClear" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

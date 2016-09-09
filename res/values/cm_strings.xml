@@ -860,6 +860,12 @@
     <string name="erase_internal_storage">Erase internal media storage</string>
     <string name="erase_internal_storage_description">Erase all the data on internal media storage, such as music or photos</string>
 
+    <!-- Pwnix Chroot Reset strings -->
+    <string name="pwnix_reset_instructions_title">Pwnix environment &amp; data </string>
+    <string name="pwnix_reset_instructions_summary">This will completely erase the Pwnix chroot environment on device. On reboot the device will automatically boot into the reprovisioning process</string>
+    <string name="pwnix_reset_warning_text_reset_now">RESET PWNIX NOW</string>
+    <string name="pwnix_reset_warning_text_message">All data inside the Pwnix chroot environment will be unconditionally removed. This cannot be reversed.\n\nThis process requires a reboot into recovery and completion of a Pwnix reinstallation wizard to continue to use the device. \n\n Are you sure you want to continue?</string>
+
     <!-- Rescan storage -->
     <string name="storage_rescan_media">Rescan media for the storage volume</string>
 

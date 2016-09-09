@@ -2437,6 +2437,11 @@
     <!-- APNs screen toast message to inform reset default APN settings is completed -->
     <string name="restore_default_apn_completed">Reset default APN settings completed.</string>
 
+    <!-- Chroot Clear -->
+	<string name="chroot_clear_title">Pwnix environment reset</string>
+	<string name="chroot_clear_summary" product="default">Erases all data inside Pwnix chroot</string>
+	<string name="chroot_clear_summary" product="tablet">Erases all data inside Pwnix chroot</string>
+	<string name="keywords_chroot_factory_reset">wipe delete restore clear remove pwnix chroot kali linux</string>
     <!-- Master Clear -->
     <!-- SD card & phone storage settings screen, setting option name under Internal phone storage heading [CHAR LIMIT=30] -->
     <string name="device_reset_title">Reset device</string>
@@ -2470,8 +2475,10 @@
     <string name="erase_external_storage_description" product="default">Erase all the data on the SD card, such as music or photos</string>
     <!-- SD card & phone storage settings screen, button on screen after user selects Factory data reset -->
     <string name="master_clear_button_text" product="tablet">Reset tablet</string>
+     <string name="pwnix_clear_button_text" product="tablet">Reset Pwnix</string>
     <!-- SD card & phone storage settings screen, button on screen after user selects Factory data reset -->
     <string name="master_clear_button_text" product="default">Reset phone</string>
+     <string name="pwnix_clear_button_text" product="default">Reset pwnix</string>
     <!-- SD card & phone storage settings screen, message on screen after user selects Reset phone button -->
     <string name="master_clear_final_desc">Erase all your personal information and downloaded apps? You can\'t reverse this action!</string>
     <!-- SD card & phone storage settings screen, button on screen after user selects Reset phone button -->
@@ -5635,6 +5642,7 @@
     <string name="keywords_text_to_speech_output">rate language default speak speaking tts accessibility reader blind</string>
     <string name="keywords_date_and_time">clock military</string>
     <string name="keywords_factory_data_reset">wipe delete restore clear remove</string>
+
     <string name="keywords_printing">printer</string>
     <string name="keywords_sounds_and_notifications">speaker beep</string>
     <string name="keywords_sounds_and_notifications_interruptions">dont don\'t disturb interrupt interruption break</string>
