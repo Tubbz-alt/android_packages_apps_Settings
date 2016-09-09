@@ -99,7 +99,7 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
     private static final String KEY_CM_UPDATES = "cm_updates";
     private static final String KEY_CM_LICENSE = "cmlicense";
     private static final String KEY_HW_VERSION = "hardware_version";
-    private static final String KEY_PWNIE_VERSION = "pwnix_version";
+    private static final String KEY_PWNIX_VERSION = "pwnix_version";
 
     static final int TAPS_TO_BE_A_DEVELOPER = 7;
 
