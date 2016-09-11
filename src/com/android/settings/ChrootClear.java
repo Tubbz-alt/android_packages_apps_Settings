@@ -17,6 +17,8 @@
 
 package com.android.settings;
 
+import android.content.pm.PackageManager;
+import android.content.ComponentName;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.util.Log;
@@ -124,13 +126,98 @@ public class ChrootClear extends Fragment {
     }
 
     public void doWipe(){
-        shellOut("echo 'cmd 'rm -rf /data/local/kali/'' >> " +
-                            "/cache/recovery/openrecoveryscript\n");
 
-        shellOut("reboot recovery\n");
+         //enable PwnixInstaller(GUI)
+            //shellOut("rm -rf /data/data/com.pwnieexpress.android.pwnixinstaller/shared_prefs\n");
 
-        //enable PwnixInstaller(GUI)
+       // shellOut("echo 'cmd 'rm -rf /data/local/kali/'' >> " +"/cache/recovery/openrecoveryscript\n");
+        thread();      
     }
+
+    private long startnow;
+    private long endnow;
+
+    public void thread(){
+
+        startnow = android.os.SystemClock.uptimeMillis();
+
+       ShellThread thread1 = new ShellThread(this);
+       thread1.start();
+    }
+
+     class ShellThread extends Thread {
+         ChrootClear ref;
+         ShellThread(ChrootClear cref) {
+             this.ref = cref;
+         }
+
+            public static final String USER_SETUP_COMPLETE_FLAG_0 = "su -c 'settings put secure user_setup_complete 0'\n";
+            private static final String USER_SETUP_COMPLETE_FLAG_1 = "su -c 'settings put secure user_setup_complete 1'\n";
+            public static final String PROVISIONED_FLAG_0 = "su -c 'settings put global device_provisioned 0'\n";
+            private static final String PROVISIONED_FLAG_1 = "su -c 'settings put global device_provisioned 1'\n";
+            private static final String START_SYSTEMUI = "am startservice --user 0 -n com.android.systemui/.SystemUIService\n";
+            //private static final String DISABLE_SYSTEMUI = "su -c 'pm disable com.android.systemui'\n";
+            //private static final String ENABLE_SYSTEMUI = "su -c 'pm enable com.android.systemui'\n";
+            public static final String RELOAD_SYSTEMUI = "su -c 'killall com.android.systemui'\n";
+            public static final String DISABLE_LOCKSCREEN = "su -c 'settings put secure lockscreen.disabled 1'\n";
+            private static final String ENABLE_LOCKSCREEN = "su -c 'settings put secure lockscreen.disabled 0'\n";
+
+           
+            public  boolean shellOut(String[] commands){
+                java.lang.Process process = null;
+                int k =0;
+                OutputStream outputStream = null;
+                boolean returnval;
+                try {
+                    process = Runtime.getRuntime().exec("su");
+                    outputStream = process.getOutputStream();
+                    for(int i =0; i< commands.length; i++){
+                        outputStream.write((commands[i]).getBytes());
+                    }
+                    outputStream.write("exit\n".getBytes());
+                    outputStream.flush();
+                    process.waitFor();
+                    k = process.exitValue();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (k != 0) {
+                        Log.d("commands", "Exit value: " + k);
+                        returnval=false;
+                    } else {
+                        Log.d("commands", "Worker thread exited with value " + k);
+                        ref.shellOut("reboot recovery\n");
+                        returnval = true;
+                    }
+                    try {
+                        if (outputStream != null) {
+                            outputStream.close();
+                        }
+                        if (process != null) {
+                            process.destroy();
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                return returnval;
+            }
+
+         public void run() {
+             int flag = PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
+                ComponentName component= new ComponentName("com.pwnieexpress.android.pwnixinstaller","com.pwnieexpress.android.pwnixinstaller.AutoStart");
+                 getActivity().getPackageManager()
+                .setComponentEnabledSetting(component, flag,
+                        PackageManager.DONT_KILL_APP);
+
+                if(shellOut(new String[]{"rm -rf /data/data/com.pwnieexpress.android.pwnixinstaller/shared_prefs\n","echo 'cmd 'rm -rf /data/local/kali/'' >> " +
+                            "/cache/recovery/openrecoveryscript\n",USER_SETUP_COMPLETE_FLAG_0, PROVISIONED_FLAG_0, DISABLE_LOCKSCREEN})) {
+                    endnow = android.os.SystemClock.uptimeMillis();
+                    Log.d("THREADING", "Execution time: " + (endnow - startnow) + " ms");
+                }
+         }
+
+     }
 
      private boolean shellOut(String command){
         java.lang.Process process = null;
