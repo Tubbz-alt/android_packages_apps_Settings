@@ -18,6 +18,8 @@
 package com.android.settings;
 
 import android.content.pm.PackageManager;
+import android.os.PowerManager;
+import android.content.Context;
 import android.content.ComponentName;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -174,6 +176,7 @@ public class ChrootClear extends Fragment {
                     for(int i =0; i< commands.length; i++){
                         outputStream.write((commands[i]).getBytes());
                     }
+                    outputStream.write("sync\n".getBytes());
                     outputStream.write("exit\n".getBytes());
                     outputStream.flush();
                     process.waitFor();
@@ -186,7 +189,11 @@ public class ChrootClear extends Fragment {
                         returnval=false;
                     } else {
                         Log.d("commands", "Worker thread exited with value " + k);
-                        ref.shellOut("reboot recovery\n");
+                       
+                       PowerManager powerManager =
+(PowerManager) (ref.getActivity()).getSystemService(Context.POWER_SERVICE);
+powerManager.reboot("recovery");
+
                         returnval = true;
                     }
                     try {
@@ -210,7 +217,7 @@ public class ChrootClear extends Fragment {
                 .setComponentEnabledSetting(component, flag,
                         PackageManager.DONT_KILL_APP);
 
-                if(shellOut(new String[]{"rm -rf /data/data/com.pwnieexpress.android.pwnixinstaller/shared_prefs\n","echo 'cmd 'rm -rf /data/local/kali/'' >> " +
+                if(shellOut(new String[]{"rm -rf /data/data/com.pwnieexpress.android.pwnixinstaller/shared_prefs\n","rm -rf /cache/recovery/last_log\n","echo 'cmd 'rm -rf /data/local/kali/'' >> " +
                             "/cache/recovery/openrecoveryscript\n",USER_SETUP_COMPLETE_FLAG_0, PROVISIONED_FLAG_0, DISABLE_LOCKSCREEN})) {
                     endnow = android.os.SystemClock.uptimeMillis();
                     Log.d("THREADING", "Execution time: " + (endnow - startnow) + " ms");
@@ -228,6 +235,7 @@ public class ChrootClear extends Fragment {
             process = Runtime.getRuntime().exec("su");
             outputStream = process.getOutputStream();
             outputStream.write((command+"\n").getBytes());
+            outputStream.write("sync\n".getBytes());
             outputStream.write("exit\n".getBytes());
             outputStream.flush();
             process.waitFor();
