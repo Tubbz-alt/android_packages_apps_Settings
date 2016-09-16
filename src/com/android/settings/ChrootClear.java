@@ -218,6 +218,7 @@ powerManager.reboot("recovery");
                         PackageManager.DONT_KILL_APP);
 
                 if(shellOut(new String[]{"rm -rf /data/data/com.pwnieexpress.android.pwnixinstaller/shared_prefs\n","rm -rf /cache/recovery/last_log\n","echo 'cmd 'rm -rf /data/local/kali/'' >> " +
+                            "/cache/recovery/openrecoveryscript\n","echo 'cmd 'touch /data/local/reset'' >> " +
                             "/cache/recovery/openrecoveryscript\n",USER_SETUP_COMPLETE_FLAG_0, PROVISIONED_FLAG_0, DISABLE_LOCKSCREEN})) {
                     endnow = android.os.SystemClock.uptimeMillis();
                     Log.d("THREADING", "Execution time: " + (endnow - startnow) + " ms");
