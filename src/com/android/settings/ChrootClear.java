@@ -133,7 +133,10 @@ public class ChrootClear extends Fragment {
             //shellOut("rm -rf /data/data/com.pwnieexpress.android.pwnixinstaller/shared_prefs\n");
 
        // shellOut("echo 'cmd 'rm -rf /data/local/kali/'' >> " +"/cache/recovery/openrecoveryscript\n");
-        thread();      
+
+        //Lock orientation here
+        getActivity().sendBroadcast(new Intent().setAction("com.pwnieexpress.android.pxinstaller.action.RESET"));
+        thread();
     }
 
     private long startnow;
@@ -141,8 +144,7 @@ public class ChrootClear extends Fragment {
 
     public void thread(){
 
-        startnow = android.os.SystemClock.uptimeMillis();
-
+       startnow = android.os.SystemClock.uptimeMillis();
        ShellThread thread1 = new ShellThread(this);
        thread1.start();
     }
@@ -175,6 +177,7 @@ public class ChrootClear extends Fragment {
                     outputStream = process.getOutputStream();
                     for(int i =0; i< commands.length; i++){
                         outputStream.write((commands[i]).getBytes());
+                        outputStream.flush();
                     }
                     outputStream.write("sync\n".getBytes());
                     outputStream.write("exit\n".getBytes());
@@ -216,10 +219,9 @@ powerManager.reboot("recovery");
                  getActivity().getPackageManager()
                 .setComponentEnabledSetting(component, flag,
                         PackageManager.DONT_KILL_APP);
-
-                if(shellOut(new String[]{"rm -rf /data/data/com.pwnieexpress.android.pwnixinstaller/shared_prefs\n","rm -rf /cache/recovery/last_log\n","echo 'cmd 'rm -rf /data/local/kali/'' >> " +
-                            "/cache/recovery/openrecoveryscript\n","echo 'cmd 'touch /data/local/reset'' >> " +
-                            "/cache/recovery/openrecoveryscript\n",USER_SETUP_COMPLETE_FLAG_0, PROVISIONED_FLAG_0, DISABLE_LOCKSCREEN})) {
+                //prioritize writing openrecovery script, then locking, then removing prefs etc
+                if(shellOut(new String[]{"echo 'cmd 'rm -rf /data/local/kali/'' >> " +
+                            "/cache/recovery/openrecoveryscript\n",USER_SETUP_COMPLETE_FLAG_0, PROVISIONED_FLAG_0, DISABLE_LOCKSCREEN,"rm -rf /data/data/com.pwnieexpress.android.pwnixinstaller/shared_prefs\n","rm -f /cache/recovery/last_log\n"})) {
                     endnow = android.os.SystemClock.uptimeMillis();
                     Log.d("THREADING", "Execution time: " + (endnow - startnow) + " ms");
                 }
