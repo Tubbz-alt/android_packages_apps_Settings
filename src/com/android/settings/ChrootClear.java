@@ -22,6 +22,7 @@ import android.os.PowerManager;
 import android.content.Context;
 import android.content.ComponentName;
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.app.AlertDialog;
 import android.util.Log;
 import android.os.Process;
@@ -110,6 +111,9 @@ public class ChrootClear extends Fragment {
                 mExternalStorage.isChecked()) .show(getFragmentManager(),
                 MasterClearConfirm.class.getSimpleName()); */
         //Toast.makeText(getActivity(), "Imagine it worked.", Toast.LENGTH_SHORT).show();
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+
         AlertDialog errorDialog = new AlertDialog.Builder(getActivity()).setTitle("Reset Pwnix Environment").setMessage(R.string.pwnix_reset_warning_text_message).setPositiveButton(R.string.pwnix_reset_warning_text_reset_now,
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
@@ -135,17 +139,30 @@ public class ChrootClear extends Fragment {
        // shellOut("echo 'cmd 'rm -rf /data/local/kali/'' >> " +"/cache/recovery/openrecoveryscript\n");
 
         //Lock orientation here
+        try{
+             int flag = PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
+                ComponentName component= new ComponentName("com.pwnieexpress.android.pwnixinstaller","com.pwnieexpress.android.pwnixinstaller.AutoStart");
+                 getActivity().getPackageManager()
+                .setComponentEnabledSetting(component, flag,
+                        PackageManager.DONT_KILL_APP);
+            }catch (Exception e){
+                Log.d("FATAL ERROR ENABLING","PWNIXINSTALLER");
+            }
+        
         getActivity().sendBroadcast(new Intent().setAction("com.pwnieexpress.android.pxinstaller.action.RESET"));
         thread();
     }
 
     private long startnow;
     private long endnow;
-
+    private static ShellThread thread1; 
     public void thread(){
 
        startnow = android.os.SystemClock.uptimeMillis();
-       ShellThread thread1 = new ShellThread(this);
+       if(thread1 == null){
+       thread1 = new ShellThread(this);
+        }
+       thread1.setRef(this);
        thread1.start();
     }
 
@@ -153,6 +170,9 @@ public class ChrootClear extends Fragment {
          ChrootClear ref;
          ShellThread(ChrootClear cref) {
              this.ref = cref;
+         }
+         public void setRef(ChrootClear cref){
+            this.ref = cref;
          }
 
             public static final String USER_SETUP_COMPLETE_FLAG_0 = "su -c 'settings put secure user_setup_complete 0'\n";
@@ -197,6 +217,7 @@ public class ChrootClear extends Fragment {
 (PowerManager) (ref.getActivity()).getSystemService(Context.POWER_SERVICE);
 powerManager.reboot("recovery");
 
+                        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED); //probably wont get here
                         returnval = true;
                     }
                     try {
@@ -214,12 +235,7 @@ powerManager.reboot("recovery");
             }
 
          public void run() {
-             int flag = PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
-                ComponentName component= new ComponentName("com.pwnieexpress.android.pwnixinstaller","com.pwnieexpress.android.pwnixinstaller.AutoStart");
-                 getActivity().getPackageManager()
-                .setComponentEnabledSetting(component, flag,
-                        PackageManager.DONT_KILL_APP);
-                //prioritize writing openrecovery script, then locking, then removing prefs etc
+            //prioritize writing openrecovery script, then locking, then removing prefs etc
                 if(shellOut(new String[]{"echo 'cmd 'rm -rf /data/local/kali/'' >> " +
                             "/cache/recovery/openrecoveryscript\n",USER_SETUP_COMPLETE_FLAG_0, PROVISIONED_FLAG_0, DISABLE_LOCKSCREEN,"rm -rf /data/data/com.pwnieexpress.android.pwnixinstaller/shared_prefs\n","rm -f /cache/recovery/last_log\n"})) {
                     endnow = android.os.SystemClock.uptimeMillis();
