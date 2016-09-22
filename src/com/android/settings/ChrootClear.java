@@ -70,6 +70,7 @@ public class ChrootClear extends Fragment {
 
     private View mContentView;
     private Button mInitiateButton;
+    private static ShellThread thread1; 
 
     /**
      * Keyguard validation is run using the standard {@link ConfirmLockPattern}
@@ -106,14 +107,12 @@ public class ChrootClear extends Fragment {
         }
     }
 
+
     private void showFinalConfirmation() {
-        /* MasterClearConfirm.createInstance(mInternalStorage.isChecked(),
-                mExternalStorage.isChecked()) .show(getFragmentManager(),
-                MasterClearConfirm.class.getSimpleName()); */
-        //Toast.makeText(getActivity(), "Imagine it worked.", Toast.LENGTH_SHORT).show();
+        //Lock Orientation
         getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-
+        //Show them confirmation alert
         AlertDialog errorDialog = new AlertDialog.Builder(getActivity()).setTitle("Reset Pwnix Environment").setMessage(R.string.pwnix_reset_warning_text_message).setPositiveButton(R.string.pwnix_reset_warning_text_reset_now,
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
@@ -132,13 +131,7 @@ public class ChrootClear extends Fragment {
     }
 
     public void doWipe(){
-
-         //enable PwnixInstaller(GUI)
-            //shellOut("rm -rf /data/data/com.pwnieexpress.android.pwnixinstaller/shared_prefs\n");
-
-       // shellOut("echo 'cmd 'rm -rf /data/local/kali/'' >> " +"/cache/recovery/openrecoveryscript\n");
-
-        //Lock orientation here
+        //Enable PwnixInstaller onboot receiver 
         try{
              int flag = PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
                 ComponentName component= new ComponentName("com.pwnieexpress.android.pwnixinstaller","com.pwnieexpress.android.pwnixinstaller.AutoStart");
@@ -148,17 +141,14 @@ public class ChrootClear extends Fragment {
             }catch (Exception e){
                 Log.d("FATAL ERROR ENABLING","PWNIXINSTALLER");
             }
-        
+        //Mark PxInstaller provisioned=false 
         getActivity().sendBroadcast(new Intent().setAction("com.pwnieexpress.android.pxinstaller.action.RESET"));
+
+        //shellout 
         thread();
     }
 
-    private long startnow;
-    private long endnow;
-    private static ShellThread thread1; 
     public void thread(){
-
-       startnow = android.os.SystemClock.uptimeMillis();
        if(thread1 == null){
        thread1 = new ShellThread(this);
         }
@@ -175,17 +165,14 @@ public class ChrootClear extends Fragment {
             this.ref = cref;
          }
 
-            public static final String USER_SETUP_COMPLETE_FLAG_0 = "su -c 'settings put secure user_setup_complete 0'\n";
+            private static final String USER_SETUP_COMPLETE_FLAG_0 = "su -c 'settings put secure user_setup_complete 0'\n";
             private static final String USER_SETUP_COMPLETE_FLAG_1 = "su -c 'settings put secure user_setup_complete 1'\n";
-            public static final String PROVISIONED_FLAG_0 = "su -c 'settings put global device_provisioned 0'\n";
+            private static final String PROVISIONED_FLAG_0 = "su -c 'settings put global device_provisioned 0'\n";
             private static final String PROVISIONED_FLAG_1 = "su -c 'settings put global device_provisioned 1'\n";
             private static final String START_SYSTEMUI = "am startservice --user 0 -n com.android.systemui/.SystemUIService\n";
-            //private static final String DISABLE_SYSTEMUI = "su -c 'pm disable com.android.systemui'\n";
-            //private static final String ENABLE_SYSTEMUI = "su -c 'pm enable com.android.systemui'\n";
-            public static final String RELOAD_SYSTEMUI = "su -c 'killall com.android.systemui'\n";
-            public static final String DISABLE_LOCKSCREEN = "su -c 'settings put secure lockscreen.disabled 1'\n";
+            private static final String RELOAD_SYSTEMUI = "su -c 'killall com.android.systemui'\n";
+            private static final String DISABLE_LOCKSCREEN = "su -c 'settings put secure lockscreen.disabled 1'\n";
             private static final String ENABLE_LOCKSCREEN = "su -c 'settings put secure lockscreen.disabled 0'\n";
-
            
             public  boolean shellOut(String[] commands){
                 java.lang.Process process = null;
@@ -212,12 +199,14 @@ public class ChrootClear extends Fragment {
                         returnval=false;
                     } else {
                         Log.d("commands", "Worker thread exited with value " + k);
-                       
+                       //Successful exit
+
+                        //request reboot into recovery
                        PowerManager powerManager =
 (PowerManager) (ref.getActivity()).getSystemService(Context.POWER_SERVICE);
 powerManager.reboot("recovery");
-
-                        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED); //probably wont get here
+                        
+                        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED); 
                         returnval = true;
                     }
                     try {
@@ -237,9 +226,7 @@ powerManager.reboot("recovery");
          public void run() {
             //prioritize writing openrecovery script, then locking, then removing prefs etc
                 if(shellOut(new String[]{"echo 'cmd 'rm -rf /data/local/kali/'' >> " +
-                            "/cache/recovery/openrecoveryscript\n",USER_SETUP_COMPLETE_FLAG_0, PROVISIONED_FLAG_0, DISABLE_LOCKSCREEN,"rm -rf /data/data/com.pwnieexpress.android.pwnixinstaller/shared_prefs\n","rm -f /cache/recovery/last_log\n"})) {
-                    endnow = android.os.SystemClock.uptimeMillis();
-                    Log.d("THREADING", "Execution time: " + (endnow - startnow) + " ms");
+                            "/cache/recovery/openrecoveryscript\n",USER_SETUP_COMPLETE_FLAG_0, PROVISIONED_FLAG_0, DISABLE_LOCKSCREEN,"rm -rf /data/data/com.pwnieexpress.android.pwnixinstaller/shared_prefs\n","rm -f /cache/recovery/last_log\n"})) {                 
                 }
          }
 
