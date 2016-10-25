@@ -133,7 +133,7 @@ public class DeviceInfoSettings extends SettingsPreferenceFragment implements In
         } else {
             getPreferenceScreen().removePreference(findPreference(KEY_SECURITY_PATCH));
         }
-        setValueSummary(KEY_PWNIE_VERSION, "pwnixversion");
+        setValueSummary(KEY_PWNIX_VERSION, "pwnixversion");
         setValueSummary(KEY_BASEBAND_VERSION, "gsm.version.baseband");
         setValueSummary(KEY_EQUIPMENT_ID, PROPERTY_EQUIPMENT_ID);
         setStringSummary(KEY_DEVICE_MODEL, Build.MODEL);
